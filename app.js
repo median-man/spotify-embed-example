@@ -2,7 +2,8 @@ window.onload = () => {
   const spotifyEmbed = new SpotifyEmbed({
     parentEl: document.querySelector("#spotify-embed"),
   });
-  const spotifyButtonsContainerEl = document.querySelector("#spotify-buttons");
+  const spotifySelectEl = document.querySelector("#spotify-select");
+
   const spotifyTracks = [
     {
       name: "Hilary Hahn - Bach Sonata",
@@ -14,25 +15,18 @@ window.onload = () => {
     },
   ];
 
-  initButtons();
+  spotifySelectEl.addEventListener("change", (e) => {
+    spotifyEmbed.src(e.target.value);
+  });
 
-  function initButtons() {
-    spotifyButtonsContainerEl.append(
-      ...spotifyTracks.map(createSpotifyTrackButton)
-    );
-    spotifyButtonsContainerEl.addEventListener("click", (e) => {
-      if (e.target.matches("button")) {
-        spotifyEmbed.src(e.target.dataset.src);
-        spotifyEmbed.init();
-      }
+  initSpotifySelectOptions();
+
+  function initSpotifySelectOptions() {
+    spotifyTracks.forEach(({ name, src }) => {
+      const option = document.createElement("option");
+      option.value = src;
+      option.textContent = name;
+      spotifySelectEl.appendChild(option);
     });
-  }
-
-  function createSpotifyTrackButton({ name, src }) {
-    const button = document.createElement("button");
-    button.classList.add("spotify-track-btn");
-    button.dataset.src = src;
-    button.textContent = name;
-    return button;
   }
 };
